@@ -1,0 +1,60 @@
+{% extends 'expert_system_app/base.html' %}
+
+{% block title %}Diagnosis Results - Medical Expert System{% endblock %}
+
+{% block content %}
+    <h2>Diagnosis Results</h2>
+
+    {% if selected_symptoms %}
+        <h4>Symptoms You Selected:</h4>
+        <ul>
+            {% for symptom in selected_symptoms %}
+                <li>{{ symptom.name }}</li>
+            {% endfor %}
+        </ul>
+        <hr>
+    {% endif %}
+
+    {% if results %}
+        <p>Based on the selected symptoms, the following conditions are considered:</p>
+        {% for item in results %}
+            <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #f9f9f9;">
+                <h3>{{ item.disease.name }}</h3>
+                <p><strong>Probability Score:</strong> {{ item.score|floatformat:2 }}%</p>
+                <p><strong>Description:</strong> {{ item.disease.description }}</p>
+                
+                <h4>Recommended Treatment:</h4>
+                {% if item.treatments %}
+                    <ul>
+                        {% for treatment in item.treatments %}
+                            <li>{{ treatment.description }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No specific treatment information available for this disease in the system.</p>
+                {% endif %}
+
+                <h4>Precautionary Steps:</h4>
+                <p>
+                    {# Placeholder for precautionary steps - this could be a field in Disease or Treatment model #}
+                    Always ensure the patient gets enough rest and hydration. 
+                    If symptoms worsen or do not improve, seek immediate medical attention from a doctor.
+                    Follow hygiene practices to prevent spread if the disease is contagious.
+                </p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No diagnosis could be determined based on the selected symptoms, or no symptoms were selected.</p>
+        <p>Please try again, or consult a medical professional if symptoms are severe.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px; padding-bottom: 50px;">
+        <a href="{% url 'expert_system_app:diagnosis_form' %}" class="cta-button">Try Another Diagnosis</a>
+        <a href="{% url 'expert_system_app:home' %}" class="cta-button">Back to Home</a>
+    </div>
+
+    <div style="margin-top: 30px; padding: 15px; background-color: #fff3cd; border-left: 6px solid #ffc107;">
+        <h4>Disclaimer:</h4>
+        <p>This diagnosis is based on a simplified expert system and is for informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</p>
+    </div>
+{% endblock %} 

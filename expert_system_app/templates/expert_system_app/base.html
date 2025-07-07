@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Medical Expert System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'expert_system_app/css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>Medical Expert System</h1>
+    </header>
+    <nav>
+        <a href="{% url 'expert_system_app:home' %}">Home</a>
+        <a href="{% url 'expert_system_app:diagnosis_form' %}">Diagnosis Form</a>
+        <a href="{% url 'expert_system_app:chatbot_interface' %}">Chatbot</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'admin:index' %}">Admin</a>
+            <a href="#">Logout (Placeholder)</a>
+        {% else %}
+            <a href="{% url 'admin:index' %}">Login (Admin)</a>
+        {% endif %}
+    </nav>
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 Medical Expert System. All rights reserved.</p>
+    </footer>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
