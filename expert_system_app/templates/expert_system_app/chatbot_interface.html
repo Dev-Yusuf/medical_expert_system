@@ -1,0 +1,94 @@
+{% extends 'expert_system_app/base.html' %}
+
+{% block title %}AI Chatbot Assistant - Medical Expert System{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="form-title">AI Chatbot Assistant</h2>
+    <p class="form-subtitle">Describe the patient's symptoms in plain language to start the conversation.</p>
+
+    <div id="chat-container">
+        <div id="chatbox">
+            <!-- Chat messages will be appended here by JavaScript -->
+            <div class="chat-message bot-message">
+                <div class="message-bubble">
+                    Hello! I'm your AI assistant. How can I help you today? Please describe the symptoms.
+                </div>
+            </div>
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
+            <button id="send-button" class="btn btn-primary">Send</button>
+        </div>
+        <div class="typing-indicator">The bot is typing...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatbox = document.getElementById('chatbox');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const typingIndicator = document.querySelector('.typing-indicator');
+
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+
+        function addMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message', sender + '-message');
+
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.classList.add('message-bubble');
+            bubbleDiv.textContent = message;
+
+            messageDiv.appendChild(bubbleDiv);
+            chatbox.appendChild(messageDiv);
+            chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll to bottom
+        }
+
+        async function handleSendMessage() {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+
+            addMessage(message, 'user');
+            chatInput.value = '';
+            typingIndicator.style.display = 'block'; // Show typing indicator
+
+            try {
+                const response = await fetch("{% url 'expert_system_app:chatbot_api' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+
+                const data = await response.json();
+                addMessage(data.response, 'bot');
+
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Sorry, something went wrong. Please try again.', 'bot');
+            } finally {
+                typingIndicator.style.display = 'none'; // Hide typing indicator
+            }
+        }
+
+        sendButton.addEventListener('click', handleSendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+    });
+</script>
+{% endblock %}

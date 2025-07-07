@@ -1,0 +1,44 @@
+{% extends 'expert_system_app/base.html' %}
+
+{% block title %}Diagnosis Results - Medical Expert System{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    <h2 class="results-title">Diagnosis Results</h2>
+    <p class="results-subtitle">Based on the selected symptoms, here are the potential diagnoses ranked by likelihood.</p>
+
+    {% if results %}
+        <div class="results-grid">
+            {% for result in results %}
+            <div class="result-card animate-on-scroll">
+                <div class="result-header">
+                    <h3 class="disease-name">{{ result.disease.name }}</h3>
+                    <div class="score-display">{{ result.score }}% Match</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: {{ result.score }}%;"></div>
+                </div>
+                <div class="result-details">
+                    <h4>Description</h4>
+                    <p>{{ result.disease.description }}</p>
+                    <h4>Recommended Treatments</h4>
+                    <ul class="treatment-list">
+                        {% for treatment in result.treatments %}
+                            <li><strong>{{ treatment.name }}:</strong> {{ treatment.description }}</li>
+                        {% empty %}
+                            <li class="no-treatments">No specific treatments listed. Please consult a doctor.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-results">No matching diseases found based on the selected symptoms. This may indicate a condition not in our database or an unusual combination of symptoms. Please consult a healthcare professional.</p>
+    {% endif %}
+
+    <div class="form-actions">
+        <a href="{% url 'expert_system_app:diagnosis_form' %}" class="btn btn-secondary">Run New Diagnosis</a>
+    </div>
+</div>
+{% endblock %}

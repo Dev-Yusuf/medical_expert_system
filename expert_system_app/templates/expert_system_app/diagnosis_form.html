@@ -3,38 +3,40 @@
 {% block title %}Symptom Diagnosis Form - Medical Expert System{% endblock %}
 
 {% block content %}
-    <h2>Symptom Input Form</h2>
-    <p>Please select the symptoms the patient is exhibiting:</p>
+<div class="form-container">
+    <h2 class="form-title">Symptom Input Form</h2>
+    <p class="form-subtitle">Please select the symptoms the patient is exhibiting to receive a diagnosis.</p>
 
     {% if error %}
         <p class="error-message">{{ error }}</p>
     {% endif %}
 
-    <form method="POST" action="{% url 'expert_system_app:diagnosis_form' %}">
+    <form method="POST" action="{% url 'expert_system_app:diagnosis_form' %}" class="diagnosis-form">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="symptoms">Select Symptoms:</label>
+        <div class="symptom-selection-grid">
             {% if symptoms %}
                 {% for symptom in symptoms %}
-                    <div>
-                        <input type="checkbox" name="symptoms" value="{{ symptom.id }}" id="symptom_{{ symptom.id }}">
-                        <label for="symptom_{{ symptom.id }}">{{ symptom.name }}</label>
-                    </div>
+                <div class="symptom-checkbox">
+                    <input type="checkbox" name="symptoms" value="{{ symptom.id }}" id="symptom_{{ symptom.id }}">
+                    <label for="symptom_{{ symptom.id }}">{{ symptom.name }}</label>
+                </div>
                 {% endfor %}
             {% else %}
                 <p>No symptoms available in the system. Please add symptoms via the admin panel.</p>
             {% endif %}
         </div>
         
-        {% if symptoms %}
-            <button type="submit" class="cta-button">Get Diagnosis</button>
-        {% else %}
-            <button type="submit" class="cta-button" disabled>Get Diagnosis</button>
-        {% endif %}
+        <div class="form-actions">
+            {% if symptoms %}
+                <button type="submit" class="btn btn-primary btn-lg">Get Diagnosis</button>
+            {% else %}
+                <button type="submit" class="btn btn-primary btn-lg" disabled>Get Diagnosis</button>
+            {% endif %}
+        </div>
     </form>
 
-    <div style="margin-top: 30px; padding-bottom: 50px;">
-        <p><em>If you prefer, you can also use our <a href="{% url 'expert_system_app:chatbot_interface' %}">Chatbot Interface</a>.</em></p>
+    <div class="alternative-action">
+        <p>Prefer a conversation? Use our <a href="{% url 'expert_system_app:chatbot_interface' %}">AI Chatbot Assistant</a>.</p>
     </div>
-
-{% endblock %} 
+</div>
+{% endblock %}

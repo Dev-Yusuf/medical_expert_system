@@ -3,35 +3,44 @@
 {% block title %}Home - Medical Expert System{% endblock %}
 
 {% block content %}
-<section class="hero-section">
-    <h2>Welcome to the Medical Expert System</h2>
-    <p>Your intelligent partner in community health. Get instant diagnostic suggestions and treatment advice based on symptoms.</p>
+<section class="hero">
+    <div class="hero-content animate-on-scroll">
+        <h1 class="hero-title">Intelligent Health Guidance, Instantly.</h1>
+        <p class="hero-subtitle">Your trusted partner in community health. Get data-driven diagnostic suggestions and treatment advice based on symptoms.</p>
+        <div class="hero-cta">
+            <a href="{% url 'expert_system_app:diagnosis_form' %}" class="btn btn-primary btn-lg">Start Diagnosis</a>
+            <a href="{% url 'expert_system_app:chatbot_interface' %}" class="btn btn-secondary btn-lg">Ask Chatbot</a>
+        </div>
+    </div>
 </section>
 
-<div class="features-grid">
-    <div class="feature-card">
-        <h3>Symptom-Based Diagnosis</h3>
-        <p>Input a set of symptoms and receive a list of potential diseases, ranked by likelihood.</p>
+<section class="features">
+    <div class="container">
+        <h2 class="section-title animate-on-scroll">Why Use Our System?</h2>
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">💡</div>
+                <h3>Symptom-Based Diagnosis</h3>
+                <p>Input symptoms to receive a ranked list of potential diseases, powered by our weighted inference engine.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">💊</div>
+                <h3>Clear Treatment Advice</h3>
+                <p>Receive clear, actionable treatment and precautionary advice for each diagnosed condition.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🤖</div>
+                <h3>AI-Powered Chatbot</h3>
+                <p>Engage with our friendly chatbot for a conversational approach to symptom checking and guidance.</p>
+            </div>
+        </div>
     </div>
-    <div class="feature-card">
-        <h3>Treatment Recommendations</h3>
-        <p>For each diagnosed condition, get clear, actionable treatment and precautionary advice.</p>
-    </div>
-    <div class="feature-card">
-        <h3>Interactive Chatbot</h3>
-        <p>Use our friendly chatbot for a conversational approach to symptom checking and guidance.</p>
-    </div>
-</div>
-
-<section class="cta-section">
-    <h3>Ready to Get Started?</h3>
-    <p>Choose your preferred method to begin the diagnosis process.</p>
-    <a href="{% url 'expert_system_app:diagnosis_form' %}" class="cta-button">Use Diagnosis Form</a>
-    <a href="{% url 'expert_system_app:chatbot_interface' %}" class="cta-button secondary">Launch Chatbot</a>
 </section>
 
-<div class="important-note">
-    <h4>Important Disclaimer</h4>
-    <p>This system is an informational tool and not a substitute for professional medical advice. Always consult a qualified healthcare provider for any medical concerns.</p>
-</div>
+<section class="disclaimer">
+    <div class="container animate-on-scroll">
+        <h4>Important Disclaimer</h4>
+        <p>This system is an informational tool and not a substitute for professional medical advice. Always consult a qualified healthcare provider for any medical concerns.</p>
+    </div>
+</section>
 {% endblock %}
