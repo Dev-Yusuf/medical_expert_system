@@ -3,24 +3,30 @@
 {% block title %}AI Chatbot Assistant - Medical Expert System{% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h2 class="form-title">AI Chatbot Assistant</h2>
-    <p class="form-subtitle">Describe the patient's symptoms in plain language to start the conversation.</p>
+<div class="chat-page-container">
+    <div class="form-container chat-container">
+        <h2 class="form-title">AI Chatbot Assistant</h2>
+        <p class="form-subtitle">Describe the patient's symptoms in plain language to start the conversation.</p>
 
-    <div id="chat-container">
-        <div id="chatbox">
-            <!-- Chat messages will be appended here by JavaScript -->
+        <div class="chatbox" id="chatbox">
+            <!-- Initial Bot Message -->
             <div class="chat-message bot-message">
                 <div class="message-bubble">
                     Hello! I'm your AI assistant. How can I help you today? Please describe the symptoms.
                 </div>
             </div>
+            <!-- Messages will be added here by JS -->
         </div>
-        <div id="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
-            <button id="send-button" class="btn btn-primary">Send</button>
+
+        <div class="typing-indicator-container">
+            <div class="typing-indicator" id="typing-indicator">The bot is typing...</div>
         </div>
-        <div class="typing-indicator">The bot is typing...</div>
+
+        <div class="chat-input-area">
+            {% csrf_token %}
+            <input type="text" id="chat-input" class="chat-input" placeholder="Type your message..." autocomplete="off">
+            <button id="send-button" class="btn btn-primary chat-send-btn">Send</button>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -31,7 +37,7 @@
         const chatbox = document.getElementById('chatbox');
         const chatInput = document.getElementById('chat-input');
         const sendButton = document.getElementById('send-button');
-        const typingIndicator = document.querySelector('.typing-indicator');
+        const typingIndicator = document.getElementById('typing-indicator');
 
         function getCsrfToken() {
             return document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -56,10 +62,10 @@
 
             addMessage(message, 'user');
             chatInput.value = '';
-            typingIndicator.style.display = 'block'; // Show typing indicator
+            typingIndicator.style.display = 'block';
 
             try {
-                const response = await fetch("{% url 'expert_system_app:chatbot_api' %}", {
+                const response = await fetch("{% url 'expert_system_app:chatbot_query' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -69,26 +75,29 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok.');
+                    const errorData = await response.json().catch(() => ({ error: 'An unknown error occurred.' }));
+                    throw new Error(errorData.error);
                 }
 
                 const data = await response.json();
-                addMessage(data.response, 'bot');
+                addMessage(data.reply, 'bot');
 
             } catch (error) {
-                console.error('Error:', error);
-                addMessage('Sorry, something went wrong. Please try again.', 'bot');
+                console.error('Chatbot Error:', error);
+                addMessage('Sorry, something went wrong. Please check the console and try again.', 'bot');
             } finally {
-                typingIndicator.style.display = 'none'; // Hide typing indicator
+                typingIndicator.style.display = 'none';
             }
         }
 
         sendButton.addEventListener('click', handleSendMessage);
         chatInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
                 handleSendMessage();
             }
         });
     });
 </script>
 {% endblock %}
+
