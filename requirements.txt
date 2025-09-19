@@ -1,7 +1,7 @@
- django
+django
 gunicorn
 whitenoise
 python-decouple
 dj-database-url
 psycopg2-binary
-
+google-generativeai

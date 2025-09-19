@@ -9,14 +9,12 @@
         <p class="form-subtitle">Describe the patient's symptoms in plain language to start the conversation.</p>
 
         <div class="chatbox" id="chatbox">
-            <!-- Initial Bot Message -->
             <div class="chat-message bot-message">
                 <div class="message-bubble">
                     Hello! I'm your AI assistant. How can I help you today? Please describe the symptoms.
                 </div>
             </div>
-            <!-- Messages will be added here by JS -->
-        </div>
+            </div>
 
         <div class="typing-indicator-container">
             <div class="typing-indicator" id="typing-indicator">The bot is typing...</div>
@@ -65,7 +63,8 @@
             typingIndicator.style.display = 'block';
 
             try {
-                const response = await fetch("{% url 'expert_system_app:chatbot_query' %}", {
+                // --- THIS IS THE CORRECTED URL ---
+                const response = await fetch("{% url 'expert_system_app:chatbot_interface' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -80,6 +79,7 @@
                 }
 
                 const data = await response.json();
+                // Use data.reply to match the JSON key from views.py
                 addMessage(data.reply, 'bot');
 
             } catch (error) {
@@ -100,4 +100,3 @@
     });
 </script>
 {% endblock %}
-
